@@ -1,25 +1,25 @@
-import { VarNode } from "./AD"
+import { VarCalcNode } from "./AD";
 
 function f() {
-    const x = new VarNode(2)
-    const y  = new VarNode(3)
-    // x*x*4+y*x*2 +3
-    // x grad = 8+6 = 14
-    // y grad = 4
-    // 16+12+3
-    // = 31
-    // const output =   x.times(x).times(4)
-    const output =   x.times(x).times(4).add(y.times(x).times(2)).add(3)
+  const x = new VarCalcNode(2);
+  const y = new VarCalcNode(3);
 
-    return  {
-        input:[x,y],
-        output
-    }
+  const m = x.times(y).times(1);
+  const output = m.times(m).add(4);
+
+  x.label='x'
+  y.label='y'
+
+  return {
+    input: [x, y],
+    output,
+  };
 }
 
-const {input,output:z}  = f()
+const { input, output: z } = f();
 
-const res = z.forward(new Map(),new Map())
-res.grad=1
-res.backward()
-console.log(z.toString(),res, input)
+const res = z.forward();
+res.backward();
+console.log("calc", z.toString());
+console.log("input", input.map(e=>e.varDesc()).join('; '));
+console.log("grad", res);
